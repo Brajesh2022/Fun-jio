@@ -449,22 +449,29 @@ const HTML_TEMPLATE = `<!DOCTYPE html>
 </body>
 </html>`;
 
+// CORS headers configuration - COMPLETELY UNRESTRICTED
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Expose-Headers': '*',
+  'Access-Control-Max-Age': '86400', // 24 hours
+  'Access-Control-Allow-Credentials': 'true',
+  'X-Frame-Options': 'ALLOWALL',
+  'Content-Security-Policy': 'frame-ancestors *',
+  'X-Content-Type-Options': 'nosniff',
+};
+
 // Main fetch event handler
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     
-    // Handle CORS preflight requests
+    // Handle CORS preflight requests (OPTIONS)
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         status: 204,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': '*',
-          'X-Frame-Options': 'ALLOWALL',
-          'Content-Security-Policy': 'frame-ancestors *',
-        },
+        headers: CORS_HEADERS,
       });
     }
 
@@ -474,6 +481,7 @@ export default {
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
           'Cache-Control': 'public, max-age=3600',
+          ...CORS_HEADERS,
         },
       });
     }
@@ -492,7 +500,7 @@ export default {
             status: 400,
             headers: {
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
+              ...CORS_HEADERS,
             },
           }
         );
@@ -518,12 +526,8 @@ export default {
           status: tmdbResponse.status,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Access-Control-Allow-Headers': '*',
-            'X-Frame-Options': 'ALLOWALL',
-            'Content-Security-Policy': 'frame-ancestors *',
             'Cache-Control': 'public, max-age=300',
+            ...CORS_HEADERS,
           },
         });
       } catch (error) {
@@ -536,7 +540,7 @@ export default {
             status: 502,
             headers: {
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
+              ...CORS_HEADERS,
             },
           }
         );
@@ -544,6 +548,9 @@ export default {
     }
 
     // Return 404 for unknown paths
-    return new Response('Not Found', { status: 404 });
+    return new Response('Not Found', { 
+      status: 404,
+      headers: CORS_HEADERS,
+    });
   },
 };
