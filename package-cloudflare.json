@@ -1,0 +1,23 @@
+{
+  "name": "tmdb-proxy-cloudflare-worker",
+  "version": "1.0.0",
+  "description": "TMDB API Proxy for Cloudflare Workers - Bypass Indian ISP blocking",
+  "main": "worker.js",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail"
+  },
+  "keywords": [
+    "tmdb",
+    "proxy",
+    "cloudflare-workers",
+    "api-proxy",
+    "reverse-proxy"
+  ],
+  "author": "DHANJEE RIDER",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
